@@ -1,11 +1,11 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { api } from '../../lib/api'
 import ProductCard from '../../components/ProductCard'
 import CategoryBar from '../../components/CategoryBar'
 
-export default function ProductsPage() {
+function ProductsInner() {
   const searchParams  = useSearchParams()
   const router        = useRouter()
   const [products, setProducts] = useState([])
@@ -70,5 +70,19 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-10">
+          {[...Array(8)].map((_, i) => <div key={i} className="card h-64 animate-pulse bg-stone-100" />)}
+        </div>
+      </div>
+    }>
+      <ProductsInner />
+    </Suspense>
   )
 }
